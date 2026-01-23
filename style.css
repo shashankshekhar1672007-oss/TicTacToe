@@ -1,0 +1,126 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #FCECDD;
+}
+
+.header {
+    height: 80px;
+    width: 100%;
+    font-family: "Nunito", sans-serif;
+    font-size: clamp(20px, 4vw, 36px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #00809D;
+}
+
+#pageTitle {
+    color: white;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+}
+
+.box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    width: 100%;
+    max-width: 560px;
+    aspect-ratio: 1 / 1;
+    background: #FF7601;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inner-box {
+    width: 90%;
+    height: 90%;
+    background: #F3A26D;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 10px;
+}
+
+.square {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    font-size: clamp(40px, 8vw, 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bottone1 {
+    border-radius: 8px;
+    background: #fcd1b7;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.bottone1:hover {
+    box-shadow: 0 0 20px #FF7601;
+}
+
+.bottone1:active {
+    transform: scale(0.96);
+}
+
+.text {
+    font-family: "Sour Gummy", sans-serif;
+    font-weight: 600;
+}
+
+.score-card {
+    width: 100%;
+    max-width: 300px;
+    height: 60px;
+    background: #FF7601;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.result {
+    font-family: "Nunito", sans-serif;
+    font-size: clamp(16px, 3vw, 24px);
+    color: white;
+}
+
+.shadow {
+    box-shadow:
+        inset 0 -2em 2em rgba(0, 0, 0, 0.1),
+        0 0 0 2px rgb(190, 190, 190),
+        0.2em 0.2em 1em rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .card {
+        max-width: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        max-width: 300px;
+    }
+}
