@@ -1,126 +1,464 @@
+/* ==========================================================================
+   Tic Tac Toe - Modern & Beginner-Friendly Stylesheet
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CSS Variables & Design Tokens
+   -------------------------------------------------------------------------- */
+:root {
+    --bg-main: #0b0f19;
+    --bg-card: #151c2c;
+    --bg-cell: #1e293b;
+    --bg-cell-hover: #2b3952;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+
+    --color-x: #38bdf8;          /* Bright Sky Blue for Player X */
+    --color-x-glow: rgba(56, 189, 248, 0.35);
+
+    --color-o: #fb7185;          /* Warm Rose Coral for Player O */
+    --color-o-glow: rgba(251, 113, 133, 0.35);
+
+    --color-win: #34d399;        /* Emerald Green for Winning combo */
+    --color-win-bg: rgba(52, 211, 153, 0.18);
+    --color-win-glow: rgba(52, 211, 153, 0.6);
+
+    --color-tie: #f59e0b;        /* Amber for Ties */
+
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Nunito', sans-serif;
+
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+
+    --shadow-main: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-subtle);
+    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Reset & Base Styles
+   -------------------------------------------------------------------------- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    background-color: #FCECDD;
-}
-
-.header {
-    height: 80px;
-    width: 100%;
-    font-family: "Nunito", sans-serif;
-    font-size: clamp(20px, 4vw, 36px);
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(251, 113, 133, 0.08) 0px, transparent 50%);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
-    background-color: #00809D;
+    align-items: center;
+    padding: 24px 16px;
+    user-select: none;
 }
 
-#pageTitle {
-    color: white;
-}
-
-.main {
+/* --------------------------------------------------------------------------
+   App Container
+   -------------------------------------------------------------------------- */
+.app-container {
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-main);
+    padding: 28px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
-    padding: 20px;
-}
-
-.box {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.card {
-    width: 100%;
-    max-width: 560px;
-    aspect-ratio: 1 / 1;
-    background: #FF7601;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.inner-box {
-    width: 90%;
-    height: 90%;
-    background: #F3A26D;
-    border-radius: 10px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    padding: 10px;
+    backdrop-filter: blur(8px);
 }
 
-.square {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    font-size: clamp(40px, 8vw, 80px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+.game-header {
+    text-align: center;
 }
 
-.bottone1 {
-    border-radius: 8px;
-    background: #fcd1b7;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
+.game-title {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 6vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--color-x) 30%, var(--color-o) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
 }
 
-.bottone1:hover {
-    box-shadow: 0 0 20px #FF7601;
-}
-
-.bottone1:active {
-    transform: scale(0.96);
-}
-
-.text {
-    font-family: "Sour Gummy", sans-serif;
+.game-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
     font-weight: 600;
 }
 
-.score-card {
+/* --------------------------------------------------------------------------
+   Game Mode Selector
+   -------------------------------------------------------------------------- */
+.mode-selector {
+    display: flex;
+    background: var(--bg-cell);
+    padding: 4px;
+    border-radius: var(--radius-md);
+    gap: 4px;
     width: 100%;
-    max-width: 300px;
-    height: 60px;
-    background: #FF7601;
-    border-radius: 10px;
+    border: 1px solid var(--border-subtle);
+}
+
+.mode-btn {
+    flex: 1;
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
+    transition: var(--transition-smooth);
 }
 
-.result {
-    font-family: "Nunito", sans-serif;
-    font-size: clamp(16px, 3vw, 24px);
-    color: white;
+.mode-btn:hover {
+    color: var(--text-primary);
 }
 
-.shadow {
-    box-shadow:
-        inset 0 -2em 2em rgba(0, 0, 0, 0.1),
-        0 0 0 2px rgb(190, 190, 190),
-        0.2em 0.2em 1em rgba(0, 0, 0, 0.3);
+.mode-btn.active {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 768px) {
-    .card {
-        max-width: 350px;
+/* --------------------------------------------------------------------------
+   Turn / Status Badge
+   -------------------------------------------------------------------------- */
+.status-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    background: var(--bg-cell);
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: var(--transition-smooth);
+}
+
+.status-icon {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--color-x);
+    transition: var(--transition-smooth);
+}
+
+.status-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.2px;
+}
+
+/* Status variants */
+.status-badge.turn-x .status-icon {
+    color: var(--color-x);
+}
+
+.status-badge.turn-o .status-icon {
+    color: var(--color-o);
+}
+
+.status-badge.winner {
+    background: var(--color-win-bg);
+    border-color: var(--color-win);
+}
+
+.status-badge.winner .status-text,
+.status-badge.winner .status-icon {
+    color: var(--color-win);
+}
+
+.status-badge.tie {
+    border-color: var(--color-tie);
+}
+
+.status-badge.tie .status-icon,
+.status-badge.tie .status-text {
+    color: var(--color-tie);
+}
+
+/* --------------------------------------------------------------------------
+   Scoreboard
+   -------------------------------------------------------------------------- */
+.scoreboard {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.score-card {
+    background: var(--bg-cell);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 10px 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: var(--transition-smooth);
+}
+
+.score-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.score-value {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.score-card.player-x .score-value {
+    color: var(--color-x);
+}
+
+.score-card.ties .score-value {
+    color: var(--color-tie);
+}
+
+.score-card.player-o .score-value {
+    color: var(--color-o);
+}
+
+/* --------------------------------------------------------------------------
+   Game Board (3x3 Grid)
+   -------------------------------------------------------------------------- */
+.board-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.board {
+    width: 100%;
+    max-width: 380px;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 8px;
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+}
+
+/* Individual Cell */
+.cell {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--bg-cell);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    font-family: var(--font-heading);
+    font-size: clamp(40px, 9vw, 68px);
+    font-weight: 800;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    outline: none;
+}
+
+.cell:hover:not(:disabled) {
+    background: var(--bg-cell-hover);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.cell:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
+.cell:disabled {
+    cursor: default;
+}
+
+/* Cell Mark Styling & Pop Animation */
+.cell.x {
+    color: var(--color-x);
+    text-shadow: 0 0 16px var(--color-x-glow);
+    animation: markPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.cell.o {
+    color: var(--color-o);
+    text-shadow: 0 0 16px var(--color-o-glow);
+    animation: markPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Winning combo highlighting */
+.cell.winner {
+    background: var(--color-win-bg) !important;
+    border-color: var(--color-win) !important;
+    color: var(--color-win) !important;
+    text-shadow: 0 0 20px var(--color-win-glow);
+    animation: winPulse 1.4s infinite ease-in-out;
+}
+
+/* --------------------------------------------------------------------------
+   Controls / Action Buttons
+   -------------------------------------------------------------------------- */
+.controls {
+    width: 100%;
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    outline: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: scale(0.97);
+}
+
+.btn-secondary {
+    background: var(--bg-cell);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-cell-hover);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+    transform: scale(0.97);
+}
+
+.btn-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Focus Accessibility */
+button:focus-visible {
+    outline: 2px solid var(--color-x);
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Keyframe Animations
+   -------------------------------------------------------------------------- */
+@keyframes markPop {
+    0% {
+        transform: scale(0.2);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
     }
 }
 
+@keyframes winPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px var(--color-win-glow);
+    }
+    50% {
+        transform: scale(1.03);
+        box-shadow: 0 0 22px var(--color-win-glow);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Media Queries
+   -------------------------------------------------------------------------- */
 @media (max-width: 480px) {
-    .card {
-        max-width: 300px;
+    .app-container {
+        padding: 20px 16px;
+        gap: 16px;
+    }
+
+    .board {
+        gap: 8px;
+        padding: 6px;
+    }
+
+    .cell {
+        border-radius: var(--radius-sm);
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
     }
 }

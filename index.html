@@ -3,38 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe</title>
-    <link rel="stylesheet" href="style.css" >
+    <title>Tic Tac Toe | Clean & Modern</title>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Rock+3D&family=Sour+Gummy:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="header shadow">
-        <h1 id="pageTitle">Tic Tac Toe</h1>
-    </div>
-    <div class="main">
-        <div class="box">
-            <div class="card shadow">
-                <div class="inner-box">
-                    <button class="square bottone1 text"></button>
-                    <button class="square bottone1 text"></button>
-                    <button class="square bottone1 text"></button>
-                    <button class="square bottone1 text"></button>
-                    <button class="square bottone1 text"></button>
-                    <button class="square bottone1 text"></button>
-                    <button class="square bottone1 text"></button>
-                    <button class="square bottone1 text"></button>
-                    <button class="square bottone1 text"></button>  
-                </div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="game-header">
+            <h1 class="game-title">Tic Tac Toe</h1>
+            <p class="game-subtitle">Play with a friend or challenge the bot</p>
+        </header>
+
+        <!-- Mode Selector -->
+        <section class="mode-selector" aria-label="Game Mode">
+            <button class="mode-btn active" id="modePvp" data-mode="pvp">
+                <span class="mode-icon">👥</span>
+                <span>2 Players</span>
+            </button>
+            <button class="mode-btn" id="modeAi" data-mode="ai">
+                <span class="mode-icon">🤖</span>
+                <span>vs Bot</span>
+            </button>
+        </section>
+
+        <!-- Status / Turn Banner -->
+        <section class="status-section">
+            <div class="status-badge" id="statusBadge">
+                <span class="status-icon" id="turnIcon">X</span>
+                <span class="status-text" id="statusText">Player X's Turn</span>
             </div>
-        </div>
-        <div class="score-card shadow">
-            <div class="result">
-                Result
+        </section>
+
+        <!-- Scoreboard -->
+        <section class="scoreboard" aria-label="Scoreboard">
+            <div class="score-card player-x">
+                <span class="score-label">Player (X)</span>
+                <span class="score-value" id="scoreX">0</span>
             </div>
-        </div>
+            <div class="score-card ties">
+                <span class="score-label">Ties</span>
+                <span class="score-value" id="scoreTies">0</span>
+            </div>
+            <div class="score-card player-o">
+                <span class="score-label" id="playerOLabel">Player (O)</span>
+                <span class="score-value" id="scoreO">0</span>
+            </div>
+        </section>
+
+        <!-- 3x3 Game Board -->
+        <main class="board-wrapper">
+            <div class="board" id="board" role="grid" aria-label="Tic Tac Toe 3 by 3 Grid">
+                <button class="cell" data-index="0" aria-label="Cell top left"></button>
+                <button class="cell" data-index="1" aria-label="Cell top center"></button>
+                <button class="cell" data-index="2" aria-label="Cell top right"></button>
+                <button class="cell" data-index="3" aria-label="Cell middle left"></button>
+                <button class="cell" data-index="4" aria-label="Cell middle center"></button>
+                <button class="cell" data-index="5" aria-label="Cell middle right"></button>
+                <button class="cell" data-index="6" aria-label="Cell bottom left"></button>
+                <button class="cell" data-index="7" aria-label="Cell bottom center"></button>
+                <button class="cell" data-index="8" aria-label="Cell bottom right"></button>
+            </div>
+        </main>
+
+        <!-- Controls -->
+        <footer class="controls">
+            <button class="btn btn-primary" id="restartBtn" title="Start a new round">
+                <span class="btn-icon">🔄</span> Play Again
+            </button>
+            <button class="btn btn-secondary" id="resetScoreBtn" title="Reset all scores to 0">
+                <span class="btn-icon">🗑️</span> Reset Scores
+            </button>
+        </footer>
     </div>
+
+    <!-- Game Logic -->
     <script src="script.js"></script>
 </body>
 </html>
