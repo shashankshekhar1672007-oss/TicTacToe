@@ -1,46 +1,97 @@
 /* ==========================================================================
-   Tic Tac Toe - Modern & Beginner-Friendly Stylesheet
+   Tic Tac Toe - Clean, Human-Crafted Design System
+   Matches the aesthetic of Rock Paper Scissors (Light & Dark Mode)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   CSS Variables & Design Tokens
+   CSS Variables & Color Schemes
    -------------------------------------------------------------------------- */
 :root {
-    --bg-main: #0b0f19;
-    --bg-card: #151c2c;
-    --bg-cell: #1e293b;
-    --bg-cell-hover: #2b3952;
-    --border-subtle: rgba(255, 255, 255, 0.08);
+    /* Page & Surfaces (Light Mode default) */
+    --page-bg: #f0f4f9;
+    --card-bg: #ffffff;
+    --section-bg: #f8fafc;
+    --section-subtle-bg: #f1f5f9;
+    --border-color: #e2e8f0;
+    --border-hover: #cbd5e1;
 
-    --color-x: #38bdf8;          /* Bright Sky Blue for Player X */
-    --color-x-glow: rgba(56, 189, 248, 0.35);
-
-    --color-o: #fb7185;          /* Warm Rose Coral for Player O */
-    --color-o-glow: rgba(251, 113, 133, 0.35);
-
-    --color-win: #34d399;        /* Emerald Green for Winning combo */
-    --color-win-bg: rgba(52, 211, 153, 0.18);
-    --color-win-glow: rgba(52, 211, 153, 0.6);
-
-    --color-tie: #f59e0b;        /* Amber for Ties */
-
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
+    /* Typography */
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
     --text-muted: #64748b;
+    --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-    --font-heading: 'Outfit', sans-serif;
-    --font-body: 'Nunito', sans-serif;
+    /* Game Colors */
+    --color-x: #2563eb;          /* Primary Blue for X */
+    --color-x-bg: #e0f2fe;
 
+    --color-o: #e11d48;          /* Rose Red for O */
+    --color-o-bg: #fee2e2;
+
+    --color-tie: #d97706;        /* Amber for Ties */
+    --color-tie-bg: #fef3c7;
+
+    --color-win: #16a34a;        /* Emerald Green for Win */
+    --color-win-bg: #dcfce7;
+    --color-win-border: #22c55e;
+
+    /* Buttons */
+    --btn-border: #2563eb;
+    --btn-text: #2563eb;
+    --btn-hover-bg: #eff6ff;
+
+    /* Shadows & Radii */
+    --card-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.07), 0 0 0 1px var(--border-color);
+    --radius-xl: 28px;
     --radius-lg: 18px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
 
-    --shadow-main: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-subtle);
-    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.2s ease;
 }
 
 /* --------------------------------------------------------------------------
-   Reset & Base Styles
+   Dark Mode Theme Override
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] {
+    /* Page & Surfaces */
+    --page-bg: #0c121e;
+    --card-bg: #151d2a;
+    --section-bg: #1a2436;
+    --section-subtle-bg: #1e2a3e;
+    --border-color: #24324a;
+    --border-hover: #334464;
+
+    /* Typography */
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #8899ac;
+
+    /* Game Colors */
+    --color-x: #38bdf8;
+    --color-x-bg: #0c2a47;
+
+    --color-o: #fb7185;
+    --color-o-bg: #3b1c25;
+
+    --color-tie: #fbbf24;
+    --color-tie-bg: #3b2e18;
+
+    --color-win: #4ade80;
+    --color-win-bg: #064e3b;
+    --color-win-border: #22c55e;
+
+    /* Buttons */
+    --btn-border: #3b82f6;
+    --btn-text: #60a5fa;
+    --btn-hover-bg: rgba(59, 130, 246, 0.12);
+
+    /* Shadows */
+    --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-color);
+}
+
+/* --------------------------------------------------------------------------
+   Reset & Base Layout
    -------------------------------------------------------------------------- */
 * {
     margin: 0;
@@ -50,91 +101,136 @@
 }
 
 body {
-    background-color: var(--bg-main);
-    background-image: 
-        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(251, 113, 133, 0.08) 0px, transparent 50%);
+    background-color: var(--page-bg);
     color: var(--text-primary);
-    font-family: var(--font-body);
+    font-family: var(--font-family);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 24px 16px;
+    transition: background-color 0.25s ease, color 0.25s ease;
     user-select: none;
 }
 
 /* --------------------------------------------------------------------------
-   App Container
+   Main App Card
    -------------------------------------------------------------------------- */
-.app-container {
+.app-card {
     width: 100%;
-    max-width: 440px;
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-main);
-    padding: 28px 24px;
+    max-width: 500px;
+    background-color: var(--card-bg);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--card-shadow);
+    padding: 32px 28px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    backdrop-filter: blur(8px);
+    gap: 18px;
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 /* --------------------------------------------------------------------------
-   Header
+   Header & Theme Toggle
    -------------------------------------------------------------------------- */
-.game-header {
-    text-align: center;
+.card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.badge-icon {
+    font-size: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #4f46e5;
+    color: #ffffff;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
 }
 
 .game-title {
-    font-family: var(--font-heading);
-    font-size: clamp(28px, 6vw, 36px);
+    font-size: 24px;
     font-weight: 800;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, var(--color-x) 30%, var(--color-o) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
     line-height: 1.2;
 }
 
 .game-subtitle {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-top: 4px;
-    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Theme Toggle Button (Matches RPS top-right button) */
+.theme-toggle-btn {
+    background-color: var(--section-subtle-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--text-primary);
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+    background-color: var(--border-hover);
+    transform: translateY(-1px);
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.95);
 }
 
 /* --------------------------------------------------------------------------
-   Game Mode Selector
+   Mode Selector (2 Players vs vs Computer)
    -------------------------------------------------------------------------- */
 .mode-selector {
     display: flex;
-    background: var(--bg-cell);
-    padding: 4px;
+    background-color: var(--section-subtle-bg);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
+    padding: 4px;
     gap: 4px;
-    width: 100%;
-    border: 1px solid var(--border-subtle);
 }
 
 .mode-btn {
     flex: 1;
     background: transparent;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     border: none;
     border-radius: var(--radius-sm);
     padding: 8px 12px;
-    font-family: var(--font-heading);
-    font-size: 14px;
-    font-weight: 600;
+    font-family: var(--font-family);
+    font-size: 13.5px;
+    font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    transition: var(--transition-smooth);
+    transition: var(--transition);
 }
 
 .mode-btn:hover {
@@ -142,171 +238,180 @@ body {
 }
 
 .mode-btn.active {
-    background: var(--bg-card);
+    background-color: var(--card-bg);
     color: var(--text-primary);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .mode-btn.active {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* --------------------------------------------------------------------------
-   Turn / Status Badge
-   -------------------------------------------------------------------------- */
-.status-section {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 20px;
-    background: var(--bg-cell);
-    border: 1px solid var(--border-subtle);
-    border-radius: 999px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transition: var(--transition-smooth);
-}
-
-.status-icon {
-    font-family: var(--font-heading);
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--color-x);
-    transition: var(--transition-smooth);
-}
-
-.status-text {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: 0.2px;
-}
-
-/* Status variants */
-.status-badge.turn-x .status-icon {
-    color: var(--color-x);
-}
-
-.status-badge.turn-o .status-icon {
-    color: var(--color-o);
-}
-
-.status-badge.winner {
-    background: var(--color-win-bg);
-    border-color: var(--color-win);
-}
-
-.status-badge.winner .status-text,
-.status-badge.winner .status-icon {
-    color: var(--color-win);
-}
-
-.status-badge.tie {
-    border-color: var(--color-tie);
-}
-
-.status-badge.tie .status-icon,
-.status-badge.tie .status-text {
-    color: var(--color-tie);
-}
-
-/* --------------------------------------------------------------------------
-   Scoreboard
+   Scoreboard (Matches Rock Paper Scissors layout)
    -------------------------------------------------------------------------- */
 .scoreboard {
-    width: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 12px;
 }
 
 .score-card {
-    background: var(--bg-cell);
-    border: 1px solid var(--border-subtle);
+    background-color: var(--section-bg);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    padding: 10px 8px;
-    text-align: center;
+    padding: 10px 12px;
     display: flex;
-    flex-direction: column;
-    gap: 2px;
-    transition: var(--transition-smooth);
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition);
 }
 
-.score-label {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-muted);
+.score-icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
 }
 
-.score-value {
-    font-family: var(--font-heading);
-    font-size: 22px;
-    font-weight: 800;
-}
-
-.score-card.player-x .score-value {
+.user-box {
+    background-color: var(--color-x-bg);
     color: var(--color-x);
 }
 
-.score-card.ties .score-value {
+.tie-box {
+    background-color: var(--color-tie-bg);
     color: var(--color-tie);
 }
 
-.score-card.player-o .score-value {
+.bot-box {
+    background-color: var(--color-o-bg);
     color: var(--color-o);
 }
 
+.score-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.score-label {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.score-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
 /* --------------------------------------------------------------------------
-   Game Board (3x3 Grid)
+   Status Banner (Matches RPS "Ready to Play!" banner)
    -------------------------------------------------------------------------- */
-.board-wrapper {
-    width: 100%;
+.status-banner {
+    background-color: var(--section-subtle-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    transition: var(--transition);
+}
+
+.status-headline {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.status-subtext {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Status variants */
+.status-banner.winner {
+    background-color: var(--color-win-bg);
+    border-color: var(--color-win-border);
+}
+
+.status-banner.winner .status-headline {
+    color: var(--color-win);
+}
+
+.status-banner.winner .status-subtext {
+    color: var(--color-win);
+    font-weight: 600;
+}
+
+.status-banner.tie {
+    background-color: var(--color-tie-bg);
+    border-color: var(--color-tie);
+}
+
+.status-banner.tie .status-headline,
+.status-banner.tie .status-subtext {
+    color: var(--color-tie);
+}
+
+/* --------------------------------------------------------------------------
+   Game Board Container & 3x3 Grid
+   -------------------------------------------------------------------------- */
+.board-container {
+    background-color: var(--section-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 16px;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .board {
     width: 100%;
-    max-width: 380px;
+    max-width: 320px;
     aspect-ratio: 1 / 1;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    padding: 8px;
-    background: rgba(15, 23, 42, 0.4);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-subtle);
+    gap: 10px;
 }
 
-/* Individual Cell */
+/* Individual Square */
 .cell {
     width: 100%;
     height: 100%;
     aspect-ratio: 1 / 1;
-    background: var(--bg-cell);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    font-family: var(--font-heading);
-    font-size: clamp(40px, 9vw, 68px);
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-family: var(--font-family);
+    font-size: clamp(34px, 8vw, 48px);
     font-weight: 800;
     color: var(--text-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
     outline: none;
 }
 
 .cell:hover:not(:disabled) {
-    background: var(--bg-cell-hover);
+    background-color: var(--section-subtle-bg);
+    border-color: var(--border-hover);
     transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.18);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
 
 .cell:active:not(:disabled) {
@@ -317,148 +422,154 @@ body {
     cursor: default;
 }
 
-/* Cell Mark Styling & Pop Animation */
+/* Mark Colors (Clean, non-AI solid tones) */
 .cell.x {
     color: var(--color-x);
-    text-shadow: 0 0 16px var(--color-x-glow);
-    animation: markPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .cell.o {
     color: var(--color-o);
-    text-shadow: 0 0 16px var(--color-o-glow);
-    animation: markPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 /* Winning combo highlighting */
 .cell.winner {
-    background: var(--color-win-bg) !important;
-    border-color: var(--color-win) !important;
+    background-color: var(--color-win-bg) !important;
+    border-color: var(--color-win-border) !important;
     color: var(--color-win) !important;
-    text-shadow: 0 0 20px var(--color-win-glow);
-    animation: winPulse 1.4s infinite ease-in-out;
+    font-weight: 800;
 }
 
 /* --------------------------------------------------------------------------
-   Controls / Action Buttons
+   Controls (Matches Rock Paper Scissors Outlined Reset Button)
    -------------------------------------------------------------------------- */
-.controls {
-    width: 100%;
+.controls-container {
     display: flex;
-    gap: 12px;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
 }
 
-.btn {
-    flex: 1;
+.reset-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 12px 16px;
-    font-family: var(--font-heading);
-    font-size: 15px;
+    background: transparent;
+    color: var(--btn-text);
+    border: 2px solid var(--btn-border);
+    border-radius: 12px;
+    padding: 10px 24px;
+    font-family: var(--font-family);
+    font-size: 14px;
     font-weight: 700;
-    border-radius: var(--radius-md);
-    border: none;
     cursor: pointer;
-    transition: var(--transition-smooth);
-    outline: none;
+    transition: var(--transition);
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-    color: #ffffff;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+.reset-btn:hover {
+    background-color: var(--btn-hover-bg);
+    transform: translateY(-1px);
 }
 
-.btn-primary:hover {
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
-    transform: translateY(-2px);
-}
-
-.btn-primary:active {
+.reset-btn:active {
     transform: scale(0.97);
 }
 
-.btn-secondary {
-    background: var(--bg-cell);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-}
-
-.btn-secondary:hover {
-    background: var(--bg-cell-hover);
-    color: var(--text-primary);
-    transform: translateY(-2px);
-}
-
-.btn-secondary:active {
-    transform: scale(0.97);
-}
-
-.btn-icon {
+.reset-icon {
     font-size: 16px;
-    line-height: 1;
+    font-weight: 800;
 }
 
-/* Focus Accessibility */
+.reset-scores-link {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-family);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: var(--transition);
+}
+
+.reset-scores-link:hover {
+    color: var(--text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Keyboard Shortcut Hint (Matches RPS Footer)
+   -------------------------------------------------------------------------- */
+.keyboard-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-align: center;
+}
+
+.keyboard-hint kbd {
+    background-color: var(--section-subtle-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 1.5px 6px;
+    font-family: var(--font-family);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-primary);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility Focus
+   -------------------------------------------------------------------------- */
 button:focus-visible {
     outline: 2px solid var(--color-x);
     outline-offset: 2px;
 }
 
 /* --------------------------------------------------------------------------
-   Keyframe Animations
-   -------------------------------------------------------------------------- */
-@keyframes markPop {
-    0% {
-        transform: scale(0.2);
-        opacity: 0;
-    }
-    70% {
-        transform: scale(1.15);
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes winPulse {
-    0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 0 10px var(--color-win-glow);
-    }
-    50% {
-        transform: scale(1.03);
-        box-shadow: 0 0 22px var(--color-win-glow);
-    }
-}
-
-/* --------------------------------------------------------------------------
-   Responsive Media Queries
+   Responsive Layout
    -------------------------------------------------------------------------- */
 @media (max-width: 480px) {
-    .app-container {
-        padding: 20px 16px;
-        gap: 16px;
+    .app-card {
+        padding: 24px 18px;
+        border-radius: 20px;
+    }
+
+    .game-title {
+        font-size: 20px;
+    }
+
+    .scoreboard {
+        gap: 8px;
+    }
+
+    .score-card {
+        padding: 8px 6px;
+        gap: 6px;
+    }
+
+    .score-icon-box {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    .score-value {
+        font-size: 17px;
     }
 
     .board {
+        max-width: 270px;
         gap: 8px;
-        padding: 6px;
     }
 
-    .cell {
-        border-radius: var(--radius-sm);
-    }
-
-    .controls {
-        flex-direction: column;
-    }
-
-    .btn {
-        width: 100%;
+    .board-container {
         padding: 12px;
     }
 }

@@ -1,27 +1,36 @@
 /**
- * Tic Tac Toe - Beginner-Friendly Game Logic
- * 
- * Features:
- * - 2-Player (PvP) and vs Bot (PvE) modes
- * - Real-time turn indicator
- * - Live score tracker for Player X, Player O, and Ties
- * - Winning pattern highlight animation
- * - Quick game restart and score reset
+ * Tic Tac Toe - Clean & Beginner-Friendly
+ * Matches the structure and features of the Rock Paper Scissors game:
+ * - Light / Dark mode toggle with local storage persistence
+ * - 2 Players & vs Computer modes
+ * - 3-Card Scoreboard (You / Ties / Computer)
+ * - "Ready to Play!" status banner
+ * - Keyboard shortcuts (1-9 to place mark, R to reset)
  */
 
 /* ==========================================================================
    1. DOM ELEMENTS
    ========================================================================== */
 const cells = document.querySelectorAll(".cell");
-const statusBadge = document.getElementById("statusBadge");
-const turnIcon = document.getElementById("turnIcon");
-const statusText = document.getElementById("statusText");
 
+// Theme Toggle
+const themeToggleBtn = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+
+// Status Banner
+const statusBanner = document.getElementById("statusBanner");
+const statusHeadline = document.getElementById("statusHeadline");
+const statusSubtext = document.getElementById("statusSubtext");
+
+// Scoreboard Elements
 const scoreXEl = document.getElementById("scoreX");
 const scoreOEl = document.getElementById("scoreO");
 const scoreTiesEl = document.getElementById("scoreTies");
+const playerXLabel = document.getElementById("playerXLabel");
 const playerOLabel = document.getElementById("playerOLabel");
+const botIconBox = document.getElementById("botIconBox");
 
+// Controls
 const restartBtn = document.getElementById("restartBtn");
 const resetScoreBtn = document.getElementById("resetScoreBtn");
 const modePvpBtn = document.getElementById("modePvp");
@@ -33,8 +42,8 @@ const modeAiBtn = document.getElementById("modeAi");
 let boardState = ["", "", "", "", "", "", "", "", ""];
 let currentPlayer = "X";
 let isGameActive = true;
-let gameMode = "pvp"; // "pvp" (2 Players) or "ai" (vs Bot)
-let botTimeoutId = null; // Keeps track of pending bot moves to prevent race conditions
+let gameMode = "ai"; // Default to 'ai' (vs Computer) like RPS
+let botTimeoutId = null;
 
 const scores = {
     X: 0,
@@ -42,69 +51,93 @@ const scores = {
     ties: 0
 };
 
-// All 8 possible winning line index combinations (3 rows, 3 columns, 2 diagonals)
+// All 8 winning rows, columns, and diagonals
 const WINNING_COMBINATIONS = [
-    [0, 1, 2], // Top row
-    [3, 4, 5], // Middle row
-    [6, 7, 8], // Bottom row
-    [0, 3, 6], // Left column
-    [1, 4, 7], // Middle column
-    [2, 5, 8], // Right column
-    [0, 4, 8], // Diagonal from top-left
-    [2, 4, 6]  // Diagonal from top-right
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+    [0, 4, 8], [2, 4, 6]             // Diagonals
 ];
 
 /* ==========================================================================
-   3. CORE GAME FUNCTIONS
+   3. THEME MANAGEMENT (Light / Dark Mode)
+   ========================================================================== */
+function initTheme() {
+    // Check saved theme in localStorage or system preference
+    const savedTheme = localStorage.getItem("tictactoe-theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+
+    applyTheme(initialTheme);
+}
+
+function applyTheme(theme) {
+    if (theme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        themeIcon.innerText = "☀️";
+        themeToggleBtn.setAttribute("title", "Switch to light mode");
+    } else {
+        document.documentElement.removeAttribute("data-theme");
+        themeIcon.innerText = "🌙";
+        themeToggleBtn.setAttribute("title", "Switch to dark mode");
+    }
+    localStorage.setItem("tictactoe-theme", theme);
+}
+
+function toggleTheme() {
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    applyTheme(isDark ? "light" : "dark");
+}
+
+/* ==========================================================================
+   4. CORE GAME LOGIC
    ========================================================================== */
 
 /**
- * Handle a user clicking on any cell in the grid
+ * Handle player move on cell click
  */
 function handleCellClick(event) {
     const clickedCell = event.target;
     const clickedIndex = parseInt(clickedCell.getAttribute("data-index"), 10);
 
-    // If the cell is already occupied or the game has ended, ignore the click
+    // If cell already marked or round is over, ignore
     if (boardState[clickedIndex] !== "" || !isGameActive) {
         return;
     }
 
-    // Play the move for current player
-    makeMove(clickedIndex, currentPlayer);
+    executeMove(clickedIndex, currentPlayer);
 
-    // Check if this move produced a win or a tie
-    const winningData = checkWin(boardState, currentPlayer);
-
-    if (winningData) {
-        handleGameWin(currentPlayer, winningData.combo);
+    // Check Win
+    const winResult = checkWin(boardState, currentPlayer);
+    if (winResult) {
+        handleWin(currentPlayer, winResult.combo);
         return;
     }
 
+    // Check Tie
     if (checkTie(boardState)) {
-        handleGameTie();
+        handleTie();
         return;
     }
 
-    // Switch turns
+    // Switch turn
     switchTurn();
 
-    // If playing against Bot and it's Bot's turn (O), trigger AI move
+    // Trigger Computer Move if vs Computer mode
     if (gameMode === "ai" && currentPlayer === "O" && isGameActive) {
-        // Temporarily pause player input while bot "thinks"
         isGameActive = false;
-        statusText.innerText = "Bot is thinking...";
-        
+        statusHeadline.innerText = "Computer is thinking...";
+        statusSubtext.innerText = "Please wait a moment...";
+
         botTimeoutId = setTimeout(() => {
-            makeBotMove();
-        }, 400); // 400ms delay gives a natural, pleasant feel
+            makeComputerMove();
+        }, 450);
     }
 }
 
 /**
- * Place a mark ('X' or 'O') on the board at a specific index
+ * Marks a square with 'X' or 'O'
  */
-function makeMove(index, player) {
+function executeMove(index, player) {
     boardState[index] = player;
     const cell = cells[index];
     cell.innerText = player;
@@ -113,32 +146,30 @@ function makeMove(index, player) {
 }
 
 /**
- * Switch the active turn between 'X' and 'O'
+ * Alternate turn between X and O
  */
 function switchTurn() {
     currentPlayer = currentPlayer === "X" ? "O" : "X";
-    updateStatusTurn();
+    updateTurnBanner();
 }
 
 /**
- * Update the turn status badge in the UI
+ * Updates the status banner text for the active player
  */
-function updateStatusTurn() {
-    statusBadge.className = "status-badge";
-    
+function updateTurnBanner() {
+    statusBanner.className = "status-banner";
+
     if (currentPlayer === "X") {
-        statusBadge.classList.add("turn-x");
-        turnIcon.innerText = "X";
-        statusText.innerText = "Player X's Turn";
+        statusHeadline.innerText = gameMode === "ai" ? "Your Turn (X)" : "Player X's Turn";
+        statusSubtext.innerText = "Pick an open square to place your mark.";
     } else {
-        statusBadge.classList.add("turn-o");
-        turnIcon.innerText = "O";
-        statusText.innerText = gameMode === "ai" ? "Bot (O)'s Turn" : "Player O's Turn";
+        statusHeadline.innerText = gameMode === "ai" ? "Computer's Turn (O)" : "Player O's Turn";
+        statusSubtext.innerText = "Waiting for Player O's move...";
     }
 }
 
 /**
- * Check if the specified player has achieved any winning combination
+ * Checks for a win in the current board
  */
 function checkWin(board, player) {
     for (const combo of WINNING_COMBINATIONS) {
@@ -151,74 +182,63 @@ function checkWin(board, player) {
 }
 
 /**
- * Check if the board is full with no winner (Tie)
+ * Checks if all cells are filled
  */
 function checkTie(board) {
     return board.every(cell => cell !== "");
 }
 
 /**
- * Handle game win event: update score, highlight cells, display message
+ * Handle game win
  */
-function handleGameWin(winner, winningCombo) {
+function handleWin(winner, winningCombo) {
     isGameActive = false;
 
-    // Highlight winning cells
+    // Highlight winning squares
     winningCombo.forEach(index => {
         cells[index].classList.add("winner");
     });
 
-    // Update score
+    // Update Score
     scores[winner] += 1;
-    updateScoreboard();
+    updateScoreDisplay();
 
-    // Update status UI
-    statusBadge.className = "status-badge winner";
-    turnIcon.innerText = "🎉";
-    
+    // Banner
+    statusBanner.className = "status-banner winner";
     if (gameMode === "ai") {
-        statusText.innerText = winner === "X" ? "You Won!" : "Bot Won!";
+        statusHeadline.innerText = winner === "X" ? "🎉 You Won!" : "🤖 Computer Won!";
     } else {
-        statusText.innerText = `Player ${winner} Wins!`;
+        statusHeadline.innerText = `🎉 Player ${winner} Won!`;
     }
+    statusSubtext.innerText = "Click Reset Game to play another round.";
 }
 
 /**
- * Handle game tie event
+ * Handle game tie
  */
-function handleGameTie() {
+function handleTie() {
     isGameActive = false;
     scores.ties += 1;
-    updateScoreboard();
+    updateScoreDisplay();
 
-    statusBadge.className = "status-badge tie";
-    turnIcon.innerText = "🤝";
-    statusText.innerText = "It's a Draw!";
+    statusBanner.className = "status-banner tie";
+    statusHeadline.innerText = "🤝 It's a Draw!";
+    statusSubtext.innerText = "Good game! Click Reset Game to try again.";
 }
 
 /**
- * Update the scoreboard numbers
+ * Update scoreboard numbers
  */
-function updateScoreboard() {
+function updateScoreDisplay() {
     scoreXEl.innerText = scores.X;
     scoreOEl.innerText = scores.O;
     scoreTiesEl.innerText = scores.ties;
 }
 
 /* ==========================================================================
-   4. SMART BOT (AI) LOGIC
+   5. COMPUTER (AI) OPPONENT LOGIC
    ========================================================================== */
-
-/**
- * Computes and executes the bot's move
- * Simple priority order:
- * 1. Can Bot win this turn? If so, take it!
- * 2. Can Player win next turn? If so, block them!
- * 3. Take center tile if available.
- * 4. Take a corner tile if available.
- * 5. Take any remaining empty tile.
- */
-function makeBotMove() {
+function makeComputerMove() {
     const emptyIndices = [];
     boardState.forEach((val, idx) => {
         if (val === "") emptyIndices.push(idx);
@@ -228,34 +248,34 @@ function makeBotMove() {
 
     let chosenIndex = null;
 
-    // 1. Check if Bot ('O') can win immediately
+    // 1. Can Computer ('O') win in 1 move? Take it!
     for (const idx of emptyIndices) {
-        const boardCopy = [...boardState];
-        boardCopy[idx] = "O";
-        if (checkWin(boardCopy, "O")) {
+        const testBoard = [...boardState];
+        testBoard[idx] = "O";
+        if (checkWin(testBoard, "O")) {
             chosenIndex = idx;
             break;
         }
     }
 
-    // 2. Check if Player ('X') can win, and block
+    // 2. Can Player ('X') win next move? Block them!
     if (chosenIndex === null) {
         for (const idx of emptyIndices) {
-            const boardCopy = [...boardState];
-            boardCopy[idx] = "X";
-            if (checkWin(boardCopy, "X")) {
+            const testBoard = [...boardState];
+            testBoard[idx] = "X";
+            if (checkWin(testBoard, "X")) {
                 chosenIndex = idx;
                 break;
             }
         }
     }
 
-    // 3. Take the center (index 4) if open
+    // 3. Take center if available
     if (chosenIndex === null && boardState[4] === "") {
         chosenIndex = 4;
     }
 
-    // 4. Take an open corner (0, 2, 6, 8)
+    // 4. Take a corner
     if (chosenIndex === null) {
         const corners = [0, 2, 6, 8].filter(idx => boardState[idx] === "");
         if (corners.length > 0) {
@@ -263,40 +283,36 @@ function makeBotMove() {
         }
     }
 
-    // 5. Fallback: random remaining cell
+    // 5. Fallback to any random open square
     if (chosenIndex === null) {
         chosenIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
     }
 
-    // Execute the bot's chosen move
-    makeMove(chosenIndex, "O");
+    executeMove(chosenIndex, "O");
 
-    // Check if bot won or tied
-    const winningData = checkWin(boardState, "O");
-
-    if (winningData) {
-        handleGameWin("O", winningData.combo);
+    const winResult = checkWin(boardState, "O");
+    if (winResult) {
+        handleWin("O", winResult.combo);
         return;
     }
 
     if (checkTie(boardState)) {
-        handleGameTie();
+        handleTie();
         return;
     }
 
-    // Switch turn back to human player (X)
     isGameActive = true;
     switchTurn();
 }
 
 /* ==========================================================================
-   5. GAME RESET & CONTROLS
+   6. GAME CONTROLS & RESET
    ========================================================================== */
 
 /**
- * Reset the board to start a fresh round without clearing the score
+ * Resets the 3x3 board for a new round without resetting scores
  */
-function restartRound() {
+function resetBoard() {
     if (botTimeoutId) {
         clearTimeout(botTimeoutId);
         botTimeoutId = null;
@@ -312,22 +328,24 @@ function restartRound() {
         cell.disabled = false;
     });
 
-    updateStatusTurn();
+    statusBanner.className = "status-banner";
+    statusHeadline.innerText = "Ready to Play!";
+    statusSubtext.innerText = "Click any square below to start.";
 }
 
 /**
- * Reset all scores back to zero and restart the board
+ * Resets both scores and board
  */
 function resetAllScores() {
     scores.X = 0;
     scores.O = 0;
     scores.ties = 0;
-    updateScoreboard();
-    restartRound();
+    updateScoreDisplay();
+    resetBoard();
 }
 
 /**
- * Switch game mode between 'pvp' and 'ai'
+ * Switch game mode (2 Players vs Computer)
  */
 function setGameMode(mode) {
     if (gameMode === mode) return;
@@ -337,29 +355,64 @@ function setGameMode(mode) {
     if (mode === "pvp") {
         modePvpBtn.classList.add("active");
         modeAiBtn.classList.remove("active");
-        playerOLabel.innerText = "Player (O)";
+        playerXLabel.innerText = "PLAYER X";
+        playerOLabel.innerText = "PLAYER O";
+        botIconBox.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+        `;
     } else {
         modeAiBtn.classList.add("active");
         modePvpBtn.classList.remove("active");
-        playerOLabel.innerText = "Bot (O)";
+        playerXLabel.innerText = "YOU";
+        playerOLabel.innerText = "COMPUTER";
+        botIconBox.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M19 11h-1V9a5 5 0 0 0-5-5V3a1 1 0 0 0-2 0v1a5 5 0 0 0-5 5v2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2zm-9-2a3 3 0 0 1 3-3 3 3 0 0 1 3 3v2h-6V9zm8 9H6v-4h12v4zm-8-3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm6 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+        `;
     }
 
-    // Reset scores & board on mode switch for a fair match
     resetAllScores();
 }
 
 /* ==========================================================================
-   6. EVENT LISTENERS
+   7. KEYBOARD SHORTCUTS (Matches RPS footer)
+   ========================================================================== */
+window.addEventListener("keydown", (e) => {
+    // Ignore key presses if user is focused on an input element
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+
+    // Keys 1-9 correspond to cells 0-8
+    const num = parseInt(e.key, 10);
+    if (!isNaN(num) && num >= 1 && num <= 9) {
+        const cellIndex = num - 1;
+        if (boardState[cellIndex] === "" && isGameActive) {
+            cells[cellIndex].click();
+        }
+    }
+
+    // Key 'R' or 'r' resets the game
+    if (e.key === "r" || e.key === "R") {
+        resetBoard();
+    }
+});
+
+/* ==========================================================================
+   8. EVENT LISTENERS
    ========================================================================== */
 cells.forEach(cell => {
     cell.addEventListener("click", handleCellClick);
 });
 
-restartBtn.addEventListener("click", restartRound);
+themeToggleBtn.addEventListener("click", toggleTheme);
+restartBtn.addEventListener("click", resetBoard);
 resetScoreBtn.addEventListener("click", resetAllScores);
 
 modePvpBtn.addEventListener("click", () => setGameMode("pvp"));
 modeAiBtn.addEventListener("click", () => setGameMode("ai"));
 
-// Initialize turn display on page load
-updateStatusTurn();
+// Initialize Theme & Game on Load
+initTheme();
+resetBoard();

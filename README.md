@@ -1,55 +1,41 @@
-# 🎮 Tic Tac Toe (Clean & Modern)
+# 🎮 Tic Tac Toe
 
-A clean, responsive, and beginner-friendly **Tic Tac Toe** web game built with pure **HTML5, CSS3, and JavaScript**.
+A clean, responsive, and beginner-friendly **Tic Tac Toe** web application designed to pair with the **Rock Paper Scissors** project with matching aesthetics, design tokens, light/dark mode support, and keyboard controls.
 
 ---
 
 ## ✨ Features
 
-- **👥 2 Players (Local PvP)**: Play head-to-head with a friend on the same screen.
-- **🤖 vs Bot (PvE)**: Play against a smart AI opponent that can defend and attack!
-- **📊 Live Scoreboard**: Tracks wins for Player X, Player O / Bot, and Ties across rounds.
-- **🔔 Real-Time Turn Indicator**: Clearly highlights who moves next with dynamic status badges.
-- **✨ Win Animation & Highlight**: Winning cells glow and pulse when a round is won.
-- **📱 Fully Responsive Design**: Looks sharp and plays smoothly on desktops, tablets, and mobile phones.
-- **🔄 Game Controls**:
-  - **Play Again**: Quickly starts a new round while keeping score.
-  - **Reset Scores**: Clears scores back to 0-0.
+- 🌓 **Light & Dark Theme Toggle**: Seamless switch between light and dark modes with preference stored in `localStorage` (matching the Rock Paper Scissors theme button).
+- 👥 **Game Modes**:
+  - **vs Computer (AI)**: Play against a smart computer opponent with move delay for natural interaction.
+  - **2 Players**: Play locally with a friend on the same screen.
+- 📊 **3-Card Scoreboard**: Real-time win/tie tracker matching the Rock Paper Scissors layout (`YOU`, `TIES`, `COMPUTER`).
+- 🔔 **Status Banner**: "Ready to Play!" banner indicating the active player and game outcomes.
+- ⌨️ **Keyboard Shortcuts**:
+  - Keys `1`–`9`: Instantly mark squares 1 through 9.
+  - Key `R`: Reset current game round.
+- 📱 **Clean & Human UI**:
+  - Solid, accessible colors (no flashy AI neon gradients).
+  - Modern typography using `Plus Jakarta Sans`.
+  - Rounded cards, clean borders, and smooth transitions.
 
 ---
 
-## 📁 Project Structure
+## 📁 File Structure
 
 ```
 TicTacToe/
-├── index.html     # Semantic HTML markup and layout
-├── style.css      # Modern dark-mode styling with CSS variables & animations
+├── index.html     # Semantic HTML layout
+├── style.css      # Design system with CSS variables for Light & Dark modes
 ├── script.js     # Clean, well-commented vanilla JavaScript logic
-└── README.md      # Project documentation
+└── README.md      # Documentation
 ```
 
 ---
 
 ## 🚀 How to Run
 
-No installations, build steps, or dependencies required!
-
-1. **Option 1: Direct in Browser**
-   - Double-click `index.html` or drag and drop it into any modern web browser (Chrome, Safari, Firefox, Edge).
-
-2. **Option 2: VS Code Live Server**
-   - Open the project folder in VS Code.
-   - Right-click `index.html` and click **"Open with Live Server"**.
-
----
-
-## 💡 What Beginners Can Learn From This Code
-
-1. **HTML**: Semantic tags (`<header>`, `<main>`, `<section>`, `<footer>`), `data-*` attributes for grid coordinates, and accessibility roles (`aria-label`, `role="grid"`).
-2. **CSS**: CSS Custom Properties (`:root`), Flexbox, CSS Grid (`repeat(3, 1fr)`), modern gradients, `@keyframes` animations, and responsive `clamp()` units.
-3. **JavaScript**:
-   - Clean state management (`boardState`, `currentPlayer`, `isGameActive`, `scores`).
-   - Event listeners and DOM manipulation (`document.querySelectorAll`, `classList`).
-   - Win/Tie algorithm matching against 8 combinations.
-   - Simple AI decision-making (winning moves -> blocking moves -> center -> corners).
-   - `setTimeout` for natural interaction delays.
+1. Open `index.html` in any modern web browser, or use the VS Code **Live Server** extension.
+2. Toggle between **Light** and **Dark** modes using the button in the top-right corner.
+3. Play using mouse clicks or keyboard numbers `1`–`9`.
